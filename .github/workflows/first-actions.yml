@@ -1,7 +1,9 @@
 name: My First GitHub Actions
 
-on: [push]
-
+on:
+  push:
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,3 +28,11 @@ jobs:
       run: |
         cd src
         python -m pytest addition.py
+    - name: Deploy to EC2
+      uses: easingthemes/ssh-deploy@v2.1.5
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        SOURCE: "./"  # Deploy the entire directory
+        REMOTE_HOST: 54.224.23.75
+        REMOTE_USER: ubuntu  # Replace with your EC2 user
+        TARGET: /home/ubuntu/app  # Deployment path on EC2
